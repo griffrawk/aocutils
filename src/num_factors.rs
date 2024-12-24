@@ -26,10 +26,12 @@ pub fn num_factors_alt(of: usize) -> usize {
 pub fn num_factors(of: usize) -> usize {
     prime_factors(of)
         .into_iter()
-        .group_by(|&a| a)
+        .chunk_by(|&a| a)
         .into_iter()
         .fold(1, |mut d, (_, prime)| {
             d *= prime.count() + 1;
             d
         })
 }
+
+
