@@ -19,7 +19,7 @@ impl<T: Add<Output = T>> Add for Point<T> {
 
 impl Point<i32> {
     // return a Vec of 4 cardinal points surrounding the input
-    pub fn nesw(&self) -> Vec<Point<i32>> {
+    pub fn cardinal_points(&self) -> Vec<Point<i32>> {
         let mut res = Vec::new();
         for offset in [
             Point { x: 0, y: -1 },
@@ -49,7 +49,7 @@ mod tests {
     #[test]
     fn point_nesw() {
         let pt: Point<i32> = Point { x: 3, y: 4 };
-        assert_eq!(pt.nesw(), vec![
+        assert_eq!(pt.cardinal_points(), vec![
             Point { x: 3, y: 3 },
             Point { x: 4, y: 4 },
             Point { x: 3, y: 5 },
