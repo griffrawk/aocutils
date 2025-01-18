@@ -1,20 +1,60 @@
-// use std::ops::Add;
+use std::ops::Add;
 
-#[derive(Debug, Clone, Copy, Eq, Hash, PartialEq)]
-pub struct Point<T> {
-    pub x: T,
-    pub y: T,
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct Point<T> {
+    x: T,
+    y: T,
 }
 
-// impl<T> Point<T> {
-//     pub fn nesw(pos: Point<T>) -> Vec<Point<T>>
-//         where for<'a> &'a T: Add<i32>
-//     {
-//         let mut res: Vec<Point<T>> = Vec::new();
-//         for (dx, dy)  in [(0, -1), (1, 0), (0, 1), (-1, 0)] {
-//             let next_pos: Point<i32> = Point { x: &pos.x + dx, y: &pos.y + dy };
-//             res.push(next_pos);
-//         }
-//         res
-//     }
-// }
+impl<T: Add<Output = T>> Add for Point<T> {
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self::Output {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl Point<i32> {
+    // return a Vec of 4 cardinal points surrounding the input
+    pub fn nesw(&self) -> Vec<Point<i32>> {
+        let mut res = Vec::new();
+        for offset in [
+            Point { x: 0, y: -1 },
+            Point { x: 1, y: 0 },
+            Point { x: 0, y: 1 },
+            Point { x: -1, y: 0 },
+        ] {
+            let next_pos = *self + offset;
+            res.push(next_pos);
+        }
+        res
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::point::Point;
+
+    #[test]
+    fn point_add() {
+        assert_eq!(
+            Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
+            Point { x: 3, y: 3 }
+        );
+    }
+
+    #[test]
+    fn point_nesw() {
+        let pt: Point<i32> = Point { x: 3, y: 4 };
+        assert_eq!(pt.nesw(), vec![
+            Point { x: 3, y: 3 },
+            Point { x: 4, y: 4 },
+            Point { x: 3, y: 5 },
+            Point { x: 2, y: 4 },
+        ]);
+    }
+}
+
