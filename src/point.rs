@@ -1,9 +1,9 @@
 use std::ops::Add;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
-struct Point<T> {
-    x: T,
-    y: T,
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
+pub struct Point<T> {
+    pub x: T,
+    pub y: T,
 }
 
 impl<T: Add<Output = T>> Add for Point<T> {
