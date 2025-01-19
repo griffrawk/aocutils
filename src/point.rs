@@ -1,5 +1,6 @@
-use std::ops::{Add, Sub};
 use num::{One, Zero};
+use std::iter::zip;
+use std::ops::{Add, Sub};
 
 #[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
 pub struct Point<T> {
@@ -57,22 +58,36 @@ impl<T: Sub<Output = T>> Sub for Point<T> {
 //     }
 // }
 
-impl<T>  Point<T> where T: Sized    //
-    + Add<Output = T>       // Add implemented where Output is T (above)
-    + Sub<Output = T>       // Add implemented where Output is T (above)
-    + Zero                  // T implemented for Zero
-    + One                   // T implemented for One
-    + Clone                 // T implemented for Clone
+impl<T> Point<T>
+where
+    T: Sized //
+        + Add<Output = T> // Add implemented where Output is T (above)
+        + Sub<Output = T> // Add implemented where Output is T (above)
+        + Zero // T implements Zero
+        + One // T implements One
+        + Clone, // T implements Clone
 {
     fn cardinal_points(&self) -> Vec<Self> {
         let mut res: Vec<Point<T>> = Vec::new();
         let zero: T = Zero::zero();
         let minus_one: T = zero - One::one();
         let offsets = vec![
-            Point { x: Zero::zero(), y: minus_one.clone() },    // N
-            Point { x: One::one(), y: Zero::zero() },           // E
-            Point { x: Zero::zero(), y: One::one() },           // S
-            Point { x: minus_one.clone(), y: Zero::zero() },    // W
+            Point {
+                x: Zero::zero(),
+                y: minus_one.clone(),
+            }, // N
+            Point {
+                x: One::one(),
+                y: Zero::zero(),
+            }, // E
+            Point {
+                x: Zero::zero(),
+                y: One::one(),
+            }, // S
+            Point {
+                x: minus_one.clone(),
+                y: Zero::zero(),
+            }, // W
         ];
         for offset in offsets {
             let next_pos = self.clone() + offset;
@@ -86,10 +101,22 @@ impl<T>  Point<T> where T: Sized    //
         let zero: T = Zero::zero();
         let minus_one: T = zero - One::one();
         let offsets = vec![
-            Point { x: minus_one.clone(), y: minus_one.clone() },   // NW
-            Point { x: One::one(), y: minus_one.clone() },          // NE
-            Point { x: One::one(), y: One::one() },                 // SE
-            Point { x: minus_one.clone(), y: One::one() },          // SW
+            Point {
+                x: One::one(),
+                y: minus_one.clone(),
+            }, // NE
+            Point {
+                x: One::one(),
+                y: One::one(),
+            }, // SE
+            Point {
+                x: minus_one.clone(),
+                y: One::one(),
+            }, // SW
+            Point {
+                x: minus_one.clone(),
+                y: minus_one.clone(),
+            }, // NW
         ];
         for offset in offsets {
             let next_pos = self.clone() + offset;
@@ -99,9 +126,15 @@ impl<T>  Point<T> where T: Sized    //
     }
 
     fn compass_points(&self) -> Vec<Self> {
-        // Not clockwise! N, E, S, W, NE, SE, SW, NW
-        let mut compass = self.cardinal_points();
-        compass.append(&mut self.ordinal_points());
+        // Clockwise! N, NE, E, SE, S, SW, W, NW
+        let cardinal = self.cardinal_points();
+        let ordinal = self.ordinal_points();
+        let compass = zip(cardinal, ordinal).fold(Vec::new(), |mut arr, t| {
+            // unpack the tuple into Vec
+            arr.push(t.0);
+            arr.push(t.1);
+            arr
+        });
         compass
     }
 }
@@ -116,8 +149,8 @@ mod tests {
             Point { x: 1, y: 0 } + Point { x: 2, y: 3 },
             Point { x: 3, y: 3 }
         );
-
-    }#[test]
+    }
+    #[test]
     fn test_sub_point() {
         assert_eq!(
             Point { x: 1, y: 0 } - Point { x: 2, y: 3 },
@@ -128,38 +161,46 @@ mod tests {
     #[test]
     fn test_cardinal_points() {
         let pt: Point<isize> = Point { x: 3, y: 4 };
-        assert_eq!(pt.cardinal_points(), vec![
-            Point { x: 3, y: 3 },
-            Point { x: 4, y: 4 },
-            Point { x: 3, y: 5 },
-            Point { x: 2, y: 4 },
-        ]);
-
-    }#[test]
+        assert_eq!(
+            pt.cardinal_points(),
+            vec![
+                Point { x: 3, y: 3 },
+                Point { x: 4, y: 4 },
+                Point { x: 3, y: 5 },
+                Point { x: 2, y: 4 },
+            ]
+        );
+    }
+    #[test]
     fn test_ordinal_points() {
         let pt: Point<isize> = Point { x: 3, y: 4 };
-        assert_eq!(pt.ordinal_points(), vec![
-            Point { x: 2, y: 3 },
-            Point { x: 4, y: 3 },
-            Point { x: 4, y: 5 },
-            Point { x: 2, y: 5 },
-        ]);
+        assert_eq!(
+            pt.ordinal_points(),
+            vec![
+                Point { x: 2, y: 3 },
+                Point { x: 4, y: 3 },
+                Point { x: 4, y: 5 },
+                Point { x: 2, y: 5 },
+            ]
+        );
     }
 
     #[test]
     fn test_compass() {
+        // Clockwise! N, NE, E, SE, S, SW, W, NW
         let pt: Point<i64> = Point { x: 3, y: 4 };
-        assert_eq!(pt.compass_points(), vec![
-            Point { x: 3, y: 3 },
-            Point { x: 4, y: 4 },
-            Point { x: 3, y: 5 },
-            Point { x: 2, y: 4 },
-            Point { x: 2, y: 3 },
-            Point { x: 4, y: 3 },
-            Point { x: 4, y: 5 },
-            Point { x: 2, y: 5 },
-        ]);
-
+        assert_eq!(
+            pt.compass_points(),
+            vec![
+                Point { x: 3, y: 3 },
+                Point { x: 4, y: 3 },
+                Point { x: 4, y: 4 },
+                Point { x: 4, y: 5 },
+                Point { x: 3, y: 5 },
+                Point { x: 2, y: 5 },
+                Point { x: 2, y: 4 },
+                Point { x: 2, y: 3 },
+            ]
+        );
     }
 }
-
