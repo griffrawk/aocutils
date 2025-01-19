@@ -127,14 +127,13 @@ where
 
     pub fn compass_points(&self) -> Vec<Self> {
         // Clockwise! N, NE, E, SE, S, SW, W, NW
-        let cardinal = self.cardinal_points();
-        let ordinal = self.ordinal_points();
-        let compass = zip(cardinal, ordinal).fold(Vec::new(), |mut arr, t| {
-            // unpack the tuple into Vec
-            arr.push(t.0);
-            arr.push(t.1);
-            arr
-        });
+        let compass =
+            zip(self.cardinal_points(), self.ordinal_points()).fold(Vec::new(), |mut arr, p| {
+                // unpack the tuple into Vec
+                arr.push(p.0);
+                arr.push(p.1);
+                arr
+            });
         compass
     }
 }
