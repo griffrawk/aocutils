@@ -67,7 +67,7 @@ where
         + One // T implements One
         + Clone, // T implements Clone
 {
-    fn cardinal_points(&self) -> Vec<Self> {
+    pub fn cardinal_points(&self) -> Vec<Self> {
         let mut res: Vec<Point<T>> = Vec::new();
         let zero: T = Zero::zero();
         let minus_one: T = zero - One::one();
@@ -96,7 +96,7 @@ where
         res
     }
 
-    fn ordinal_points(&self) -> Vec<Self> {
+    pub fn ordinal_points(&self) -> Vec<Self> {
         let mut res: Vec<Point<T>> = Vec::new();
         let zero: T = Zero::zero();
         let minus_one: T = zero - One::one();
@@ -125,7 +125,7 @@ where
         res
     }
 
-    fn compass_points(&self) -> Vec<Self> {
+    pub fn compass_points(&self) -> Vec<Self> {
         // Clockwise! N, NE, E, SE, S, SW, W, NW
         let cardinal = self.cardinal_points();
         let ordinal = self.ordinal_points();
