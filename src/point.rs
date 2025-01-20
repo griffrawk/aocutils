@@ -1,4 +1,5 @@
-use num::{One, Zero};
+use std::cmp::max;
+use num::{abs, One, Signed, Zero};
 use std::iter::zip;
 use std::ops::{Add, Sub};
 
@@ -30,43 +31,33 @@ impl<T: Sub<Output = T>> Sub for Point<T> {
     }
 }
 
-// Horrible. Compiler suggestions one after the other give this indecipherable impl and
-// fn. Not sure how that return value is supposed to work. I just about understand the where
-// clause but not the lifetime spec
-// Can't create a vec! of integer literals as T, so have to try this num crate
-// num crate gives one() & zero() which are T, but no negative numbers, so my Point
-// array isn't correct.
-// I have to use T, as the input is Point<T> and let it sort it out.
+impl Point<f32> {
+    fn distance_from_origin(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
 
-// impl<T> Point<T> where for<'a> &'a Point<T>: Add<Point<T>> {
-//     pub fn cardinal_points(&self) -> Vec<<&Point<T> as Add<Point<T>>>::Output> {
-//         let mut res = Vec::new();
-//         let mut minus_one: T = Zero::zero();
-//         // can't even do this, doesnt support subtraction or -ve numbers...
-//         minus_one = minus_one - One::one();
-//         let offsets = vec![
-//             Point { x: Zero::zero(), y: minus_one.clone() },
-//             Point { x: One::one(), y: Zero::zero() },
-//             Point { x: Zero::zero(), y: One::one() },
-//             Point { x: minus_one.clone(), y: Zero::zero() },
-//         ];
-//         for offset in offsets {
-//             let next_pos = self + offset;
-//             res.push(next_pos);
-//         }
-//         res
-//     }
-// }
+impl<T> Point<T> where T: Signed + Clone + Ord
+{
+    pub fn taxicab_distance(&self, other: Self) -> T {
+        abs(self.x.clone() - other.x) + abs(self.y.clone() - other.y)
+    }
+
+    pub fn chebyshev_distance(&self, other: Self) -> T {
+        max(abs(self.x.clone() - other.x), abs(self.y.clone() - other.y))
+    }
+}
 
 impl<T> Point<T>
 where
-    T: Sized //
-        + Add<Output = T> // Add implemented where Output is T (above)
-        + Sub<Output = T> // Add implemented where Output is T (above)
+    T: Sized // ensures size of T is known at compile time (so prob no slices)
+        + Add<Output = T> // T implements Add where Output is T (above)
+        + Sub<Output = T> // T implements Sub where Output is T (above)
         + Zero // T implements Zero
         + One // T implements One
-        + Clone, // T implements Clone
+        + Clone // T implements Clone
 {
+
     pub fn cardinal_points(&self) -> Vec<Self> {
         let mut res: Vec<Point<T>> = Vec::new();
         let zero: T = Zero::zero();
@@ -202,4 +193,15 @@ mod tests {
             ]
         );
     }
+
+    #[test]
+    fn test_taxicab() {
+        assert_eq!(Point { x: 3, y: 4 }.taxicab_distance( Point { x: 7, y: 2}), 6);
+    }
+
+    #[test]
+    fn test_chebyshev() {
+        assert_eq!(Point { x: 3, y: 4 }.chebyshev_distance( Point { x: 7, y: 2}), 4);
+    }
+
 }
