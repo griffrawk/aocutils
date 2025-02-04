@@ -168,10 +168,10 @@ mod tests {
         assert_eq!(
             pt.ordinal_points(),
             vec![
-                Point { x: 2, y: 3 },
                 Point { x: 4, y: 3 },
                 Point { x: 4, y: 5 },
                 Point { x: 2, y: 5 },
+                Point { x: 2, y: 3 },
             ]
         );
     }
