@@ -32,6 +32,7 @@ impl<T: Sub<Output = T>> Sub for Point<T> {
 }
 
 impl Point<f32> {
+
     fn distance_from_origin(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
@@ -202,6 +203,12 @@ mod tests {
     #[test]
     fn test_chebyshev() {
         assert_eq!(Point { x: 3, y: 4 }.chebyshev_distance( Point { x: 7, y: 2}), 4);
+    }
+
+    #[test]
+    fn test_distance() {
+        // pythagoras
+        assert_eq!(Point { x: 3.0, y: 4.0 }.distance_from_origin(), 5.0);
     }
 
 }
