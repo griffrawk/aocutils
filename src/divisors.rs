@@ -1,25 +1,28 @@
-use num::abs;
+use num::{Integer, Zero};
 
 // Euclid's Algorithm for greatest common divisor
-pub fn gcd(a: i32, b: i32) -> i32 {
-    if b == 0 {
+pub fn gcd<T: Integer + Clone>(a: T, b: T ) -> T {
+    if b == Zero::zero() {
         a
     } else {
-        // Just for explanation purposes while looking at Diophantine equations
-        println!("{} - ({} * {}) = {}", a, abs(a / b), b, a % b);
-        gcd(b, a % b)
+        gcd(b.clone(), a % b)
     }
 }
 
-pub fn lcm(a: i32, b: i32) -> i32 {
-    (a / gcd(a, b)) * b
+pub fn lcm<T: Integer + Clone>(a: T, b: T) -> T {
+    (a.clone() / gcd(a, b.clone())) * b
 }
 
 mod tests {
-    use crate::divisors::gcd;
+    use crate::divisors::{gcd, lcm};
 
     #[test]
     fn gcd_test() {
         dbg!(gcd(94, 22));
+    }
+
+    #[test]
+    fn lcm_test() {
+        dbg!(lcm(22, 56 ));
     }
 }
