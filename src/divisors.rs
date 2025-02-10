@@ -1,4 +1,5 @@
-use num::{Integer, Zero};
+use num::{Integer, One, Zero};
+use num::integer::div_floor;
 
 // Euclid's Algorithm for greatest common divisor
 pub fn gcd<T: Integer + Clone>(a: T, b: T ) -> T {
@@ -9,17 +10,66 @@ pub fn gcd<T: Integer + Clone>(a: T, b: T ) -> T {
     }
 }
 
+// Extended Euclidean Algorithm
+pub fn gcd_extended<T: Integer + Clone>(a: T, b: T) -> (T, T, T) {
+    if a == Zero::zero() {
+        return (b, Zero::zero(), One::one());
+    }
+    let (gcd, x1, y1) = gcd_extended(b.clone() % a.clone(), a.clone());
+    let x = y1 - div_floor(b, a) * x1.clone();
+    let y = x1;
+    (gcd, x, y)
+}
+
+
+
 pub fn lcm<T: Integer + Clone>(a: T, b: T) -> T {
     (a.clone() / gcd(a, b.clone())) * b
 }
 
 mod tests {
-    use crate::divisors::{gcd, lcm};
+    use crate::divisors::{gcd, gcd_extended, lcm};
 
     #[test]
     fn gcd_test() {
-        dbg!(gcd(94, 22));
+        dbg!(gcd(39, 15));
     }
+
+    #[test]
+    fn extended_gcd_test() {
+        // ax + by = c
+        //
+        // 94x + 22y = 8400
+        // cheat x = 80, y = 40
+
+        let a = 94;
+        let b = 22;
+        let res = gcd_extended(a, b);
+        dbg!(res);
+        // at this point ax + by = gcd(a,b)
+        //               94 * 2 + 22 * -17 = 2
+        // but nowhere near, even if
+        //
+    }
+#[test]
+    fn extended_gcd_all_solutions_test() {
+        // pretty, but doesn't get me any closer
+        // any value of k also gives solutions
+        let a = 94;
+        let b = 22;
+        let (gcd, x, y) = gcd_extended(a, b);
+        dbg!(gcd, x, y);
+        let mut k = 0;
+        while k < 10 {
+            let xn = x + ((k * b) / gcd);
+            let yn = y - ((k * a) / gcd);
+            dbg!(k, xn, yn);
+            k += 1;
+
+        }
+
+    }
+
 
     #[test]
     fn lcm_test() {
