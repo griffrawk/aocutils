@@ -73,6 +73,6 @@ mod tests {
 
     #[test]
     fn lcm_test() {
-        dbg!(lcm(22, 56 ));
+        dbg!(lcm(94, 34 ));
     }
 }
