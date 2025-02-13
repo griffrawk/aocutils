@@ -3,7 +3,7 @@ use num::{abs, One, Signed, Zero};
 use std::iter::zip;
 use std::ops::{Add, Sub};
 
-#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq)]
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Default)]
 pub struct Point<T> {
     pub x: T,
     pub y: T,
