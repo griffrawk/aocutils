@@ -21,31 +21,6 @@ pub fn gcd_extended<T: Integer + Clone>(a: T, b: T) -> (T, T, T) {
     (gcd, x, y)
 }
 
-
-
 pub fn lcm<T: Integer + Clone>(a: T, b: T) -> T {
     (a.clone() / gcd(a, b.clone())) * b
-}
-
-mod tests {
-    use crate::divisors::{gcd, gcd_extended, lcm};
-
-    #[test]
-    fn gcd_test() {
-        let g = gcd(39, 15);
-        dbg!(g);
-    }
-
-    #[test]
-    fn extended_gcd_test() {
-        let a = 94;
-        let b = 22;
-        let res = gcd_extended(a, b);
-        dbg!(res);
-    }
-
-    #[test]
-    fn lcm_test() {
-        dbg!(lcm(94, 34 ));
-    }
 }
