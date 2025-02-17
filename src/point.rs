@@ -32,7 +32,7 @@ impl<T: Sub<Output = T>> Sub for Point<T> {
 }
 
 impl Point<f32> {
-
+    #[allow(dead_code)]
     fn distance_from_origin(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
     }
