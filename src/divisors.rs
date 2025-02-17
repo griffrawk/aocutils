@@ -43,25 +43,6 @@ mod tests {
         let res = gcd_extended(a, b);
         dbg!(res);
     }
-#[test]
-    fn extended_gcd_all_solutions_test() {
-        // pretty, but doesn't get me any closer
-        // any value of k also gives solutions
-        let a = 94;
-        let b = 22;
-        let (gcd, x, y) = gcd_extended(a, b);
-        dbg!(gcd, x, y);
-        let mut k = 0;
-        while k < 10 {
-            let xn = x + ((k * b) / gcd);
-            let yn = y - ((k * a) / gcd);
-            dbg!(k, xn, yn);
-            k += 1;
-
-        }
-
-    }
-
 
     #[test]
     fn lcm_test() {
