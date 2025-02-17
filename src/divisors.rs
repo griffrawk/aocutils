@@ -32,24 +32,16 @@ mod tests {
 
     #[test]
     fn gcd_test() {
-        dbg!(gcd(39, 15));
+        let g = gcd(39, 15);
+        dbg!(g);
     }
 
     #[test]
     fn extended_gcd_test() {
-        // ax + by = c
-        //
-        // 94x + 22y = 8400
-        // cheat x = 80, y = 40
-
         let a = 94;
         let b = 22;
         let res = gcd_extended(a, b);
         dbg!(res);
-        // at this point ax + by = gcd(a,b)
-        //               94 * 2 + 22 * -17 = 2
-        // but nowhere near, even if
-        //
     }
 #[test]
     fn extended_gcd_all_solutions_test() {
