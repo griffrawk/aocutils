@@ -1,5 +1,5 @@
-use std::cmp::max;
 use num::{abs, One, Signed, Zero};
+use std::cmp::max;
 use std::iter::zip;
 use std::ops::{Add, Sub};
 
@@ -38,7 +38,9 @@ impl Point<f32> {
     }
 }
 
-impl<T> Point<T> where T: Signed + Clone + Ord
+impl<T> Point<T>
+where
+    T: Signed + Clone + Ord,
 {
     pub fn taxicab_distance(&self, other: Self) -> T {
         abs(self.x.clone() - other.x) + abs(self.y.clone() - other.y)
@@ -56,9 +58,8 @@ where
         + Sub<Output = T> // T implements Sub where Output is T (above)
         + Zero // T implements Zero
         + One // T implements One
-        + Clone // T implements Clone
+        + Clone, // T implements Clone
 {
-
     pub fn cardinal_points(&self) -> Vec<Self> {
         let mut res: Vec<Point<T>> = Vec::new();
         let zero: T = Zero::zero();
@@ -119,14 +120,12 @@ where
 
     pub fn compass_points(&self) -> Vec<Self> {
         // Clockwise! N, NE, E, SE, S, SW, W, NW
-        let compass =
-            zip(self.cardinal_points(), self.ordinal_points()).fold(Vec::new(), |mut arr, p| {
-                // unpack the tuple into Vec
-                arr.push(p.0);
-                arr.push(p.1);
-                arr
-            });
-        compass
+        zip(self.cardinal_points(), self.ordinal_points()).fold(Vec::new(), |mut arr, p| {
+            // unpack the tuple into Vec
+            arr.push(p.0);
+            arr.push(p.1);
+            arr
+        })
     }
 }
 
@@ -197,12 +196,18 @@ mod tests {
 
     #[test]
     fn test_taxicab() {
-        assert_eq!(Point { x: 3, y: 4 }.taxicab_distance( Point { x: 7, y: 2}), 6);
+        assert_eq!(
+            Point { x: 3, y: 4 }.taxicab_distance(Point { x: 7, y: 2 }),
+            6
+        );
     }
 
     #[test]
     fn test_chebyshev() {
-        assert_eq!(Point { x: 3, y: 4 }.chebyshev_distance( Point { x: 7, y: 2}), 4);
+        assert_eq!(
+            Point { x: 3, y: 4 }.chebyshev_distance(Point { x: 7, y: 2 }),
+            4
+        );
     }
 
     #[test]
@@ -210,5 +215,4 @@ mod tests {
         // pythagoras
         assert_eq!(Point { x: 3.0, y: 4.0 }.distance_from_origin(), 5.0);
     }
-
 }

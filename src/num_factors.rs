@@ -33,5 +33,3 @@ pub fn num_factors(of: usize) -> usize {
             d
         })
 }
-
-

@@ -11,8 +11,8 @@ mod tests {
     use crate::divisors::gcd;
     use crate::eratosthenes_sieve::Sieve;
     use crate::fibonacci_gen::Fibseq;
-    use crate::prime_factors::prime_factors;
     use crate::num_factors::{num_factors, num_factors_alt};
+    use crate::prime_factors::prime_factors;
 
     #[test]
     fn test_prime_factors() {

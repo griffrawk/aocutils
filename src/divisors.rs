@@ -1,8 +1,8 @@
-use num::{Integer, One, Zero};
 use num::integer::div_floor;
+use num::{Integer, One, Zero};
 
 // Euclid's Algorithm for greatest common divisor
-pub fn gcd<T: Integer + Clone>(a: T, b: T ) -> T {
+pub fn gcd<T: Integer + Clone>(a: T, b: T) -> T {
     if b == Zero::zero() {
         a
     } else {
