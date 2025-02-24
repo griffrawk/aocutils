@@ -1,7 +1,9 @@
+use std::cmp::Ordering;
 use crate::point::Point;
-use std::collections::HashMap;
+use std::collections::{BinaryHeap, HashMap};
 use std::fs;
 use std::ops::Range;
+use num::{abs, ToPrimitive};
 
 #[derive(Debug)]
 pub enum EdgeData {
@@ -16,10 +18,32 @@ pub struct Node {
     h: usize,
 }
 
+#[derive(Debug, Eq, PartialEq)]
+struct State {
+    priority: usize,
+    node: Point<usize>,
+}
+
+// min-heap
+impl Ord for State {
+    fn cmp(&self, other: &Self) -> Ordering {
+        // lowest priority, then by highest pos.x
+        other.priority.cmp(&self.priority)
+            .then_with(|| self.node.x.cmp(&other.node.x))
+    }
+}
+
+impl PartialOrd for State {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 #[derive(Debug)]
 pub struct Graph {
     adjacency_list: HashMap<Point<usize>, Vec<(Point<usize>, EdgeData)>>,
-    // node_list: HashMap<Point<usize>, Node>,
+    node_list: HashMap<Point<usize>, Node>,
+    priority_queue: BinaryHeap<State>,
     xrange: Range<usize>,
     yrange: Range<usize>,
     start: Point<usize>,
@@ -35,6 +59,8 @@ impl Graph {
         let mut start = Point::default();
         let mut end = Point::default();
         let mut adjacency_list = HashMap::new();
+        let mut node_list = HashMap::new();
+        let priority_queue = BinaryHeap::new();
         let mut maze: Vec<Vec<char>> = Vec::new();
         for (y, row) in fs::read_to_string(file)
             .expect("Can't read the file")
@@ -47,7 +73,6 @@ impl Graph {
         }
         for (y, row) in maze.iter().enumerate() {
             for (x, c) in row.iter().enumerate() {
-                let node = Point { x, y };
                 match c {
                     '.' | 'S' | 'E' => {
                         if *c == 'S' {
@@ -59,17 +84,17 @@ impl Graph {
                             end.y = y;
                         }
                         let mut edges: Vec<(Point<usize>, EdgeData)> = Vec::new();
-                        for cardinal in node.cardinal_usize() {
-                            if let Some(card) = cardinal {
-                                if xrange.contains(&card.x) && yrange.contains(&card.y) {
-                                    let n = maze[card.y][card.x];
+                        for cardinal in (Point {x: x as i32, y: y as i32 }).cardinal_points() {
+                                let cardinal= Point { x: cardinal.x.to_usize().unwrap(), y: cardinal.y.to_usize().unwrap() };
+                                if xrange.contains(&cardinal.x) && yrange.contains(&cardinal.y) {
+                                    let n = maze[cardinal.y][cardinal.x];
                                     match n {
-                                        '.' | 'S' | 'E' => edges.push((card, EdgeData::Weight(1))),
+                                        '.' | 'S' | 'E' => edges.push((cardinal, EdgeData::Weight(1))),
                                         _ => (),
                                     }
-                                }
                             }
                         }
+                        let node = Point { x, y };
                         adjacency_list.insert(node, edges);
                     },
                     _ => (),
@@ -80,11 +105,17 @@ impl Graph {
 
         Self {
             adjacency_list,
+            node_list,
+            priority_queue,
             xrange,
             yrange,
             start,
             end,
         }
+    }
+    
+    fn heuristic_distance(&mut self, pos: Point<usize>) -> usize {
+        (abs(self.end.x as i32 - pos.x as i32) + abs(self.end.y as i32 - pos.y as i32)).to_usize().unwrap_or_default()
     }
 }
 

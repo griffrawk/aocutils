@@ -5,7 +5,7 @@ pub mod num_factors;
 pub mod point;
 pub mod prime_factors;
 pub mod sums;
-mod graph;
+pub mod graph;
 
 #[cfg(test)]
 mod tests {
