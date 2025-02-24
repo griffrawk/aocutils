@@ -1,4 +1,4 @@
-use num::{abs, One, Signed, Zero};
+use num::{abs, One, Signed, ToPrimitive, Zero};
 use std::cmp::max;
 use std::iter::zip;
 use std::ops::{Add, Sub};
@@ -35,6 +35,27 @@ impl Point<f32> {
     #[allow(dead_code)]
     fn distance_from_origin(&self) -> f32 {
         (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+
+impl Point<usize> {
+    pub fn cardinal_usize(&self) -> Vec<Option<Point<usize>>> {
+        let mut res: Vec<Option<Point<usize>>> = Vec::new();
+        let offsets = vec![
+            Point { x: 0, y: -1, }, // N
+            Point { x: 1, y: 0, }, // E
+            Point { x: 0, y: 1, }, // S
+            Point { x: -1, y: 0, }, // W
+        ];
+        for offset in offsets {
+            let next_pos = Point {x: self.x as i32, y: self.y as i32} + offset;
+            if !next_pos.x.is_negative() || next_pos.y.is_negative() {
+                res.push(Some(Point { x: next_pos.x.to_usize().unwrap(), y: next_pos.y.to_usize().unwrap() }));
+            } else {
+                res.push(None);
+            }
+        }
+        res
     }
 }
 
