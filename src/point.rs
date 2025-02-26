@@ -3,7 +3,7 @@ use std::cmp::max;
 use std::iter::zip;
 use std::ops::{Add, Sub};
 
-#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Default)]
+#[derive(Debug, Copy, Clone, Hash, Eq, PartialEq, Default, Ord, PartialOrd)]
 pub struct Point<T> {
     pub x: T,
     pub y: T,
