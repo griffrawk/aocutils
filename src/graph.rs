@@ -2,14 +2,15 @@ use std::cmp::{Ordering, Reverse};
 use crate::point::Point;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::{env, fs};
-use std::fmt::Debug;
 use std::ops::Range;
 use num::{abs, ToPrimitive};
 use plotters::coord::types::RangedCoordi32;
 use plotters::prelude::*;
 
-
+// fixme awkward directory path
 const OUTPUT_FILENAME: &str = "/Users/andyg/projects/rust_projects/AoC/aoc2024/src/bin/day16/output/day16_gen";
+
+// Undirected, weight 1 graph from an array of 'walls'. 'S' & 'E' mark start, end
 
 #[derive(Debug)]
 pub struct Graph {
