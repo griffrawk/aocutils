@@ -198,7 +198,7 @@ mod tests {
 
     #[test]
     fn test_graph() {
-        let graph = Graph::new("src/test_graph.txt");
+        let graph = Graph::new("src/day16_test_a.txt");
         dbg!(graph);
     }
     
