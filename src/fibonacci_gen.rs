@@ -4,10 +4,10 @@ pub struct Fibseq {
     second_term: usize,
 }
 
-impl Default for Fibseq { 
+impl Default for Fibseq {
     fn default() -> Self {
         Self::new()
-        } 
+    }
 }
 
 impl Fibseq {
